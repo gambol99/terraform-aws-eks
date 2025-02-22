@@ -1,0 +1,8 @@
+AVD-DS-0002 # Least Privilege (Dockerfile)
+AVD-DS-0013 # Use Workdir Over Cd (Dockerfile)
+AVD-DS-0015 # Purge Yum Package Cache (Dockerfile
+AVD-DS-0026 # No Healthcheck (Dockerfile)
+AVD-AWS-0067 # Restrict Source Arn (Lambda)
+AVD-AWS-0057 # No Policy Wildcards
+AVD-AWS-0095 # Enable Topic Encryption
+AVD-DS-0001  # Use Specific Tags (Dockerfile)
