@@ -1,9 +1,10 @@
 
-## Helm Provider 
+## Helm Provider
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
       args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
@@ -12,8 +13,16 @@ provider "helm" {
   }
 }
 
-## ArgoCD Provider
-provider "argocd" {
-  server_addr = module.eks.cluster_endpoint
-  core        = true
+## Kubernetes Provider
+provider "kubectl" {
+  apply_retry_count      = 3
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  load_config_file       = false
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    command     = "aws"
+  }
 }

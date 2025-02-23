@@ -1,15 +1,20 @@
 
 locals {
+  ## Github username
+  github_username = "gambol99"
+
   argocd_repositories_secrets = {
     "platform" = {
-      description        = "GitHub repository"
-      url                = "https://github.com/gambol99/eks-platform"
-      secret_manager_arn = var.github_token
+      description = "GitHub repository"
+      url         = "https://github.com/gambol99/kubernetes-platform"
+      username    = local.github_username
+      password    = var.github_token
     }
     "tenant" = {
-      description        = "GitHub repository"
-      url                = "https://github.com/gambol99/eks-tenant"
-      secret_manager_arn = var.github_token
+      description = "GitHub repository"
+      url         = "https://github.com/gambol99/eks-tenant"
+      username    = local.github_username
+      password    = var.github_token
     }
   }
 }

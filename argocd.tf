@@ -1,55 +1,71 @@
 
 locals {
-  ## A map of secrets to retrieve from AWS Secrets Manager 
-  argocd_secrets = { for k, v in var.argocd_repositories_secrets : k => v if v.secret_manager_arn != null }
-}
-
-## Provision the ArgoCD namespace
-resource "kubernetes_namespace" "argocd" {
-  metadata {
-    name = "argocd"
+  ## A map of secrets to retrieve from AWS Secrets Manager
+  argocd_secrets = [
+    for k, v in var.argocd_repositories_secrets : {
+      name               = k
+      secret_manager_arn = v.secret_manager_arn
+    } if v.secret_manager_arn != null
+  ]
+  ## A map of secrets created from direct inputs
+  argocd_secrets_inputs = {
+    for k, v in var.argocd_repositories_secrets : k => v if v.secret_manager_arn == null
   }
 }
 
 ## ArgoCD Helm Release
 resource "helm_release" "argocd" {
-  name       = "argocd"
-  repository = var.argocd_helm_repository
-  chart      = "argo-cd"
-  version    = var.argocd_version
-  namespace  = kubernetes_namespace.argocd.metadata[0].name
+  name             = "argocd"
+  chart            = "argo-cd"
+  create_namespace = true
+  namespace        = "argocd"
+  repository       = var.argocd_helm_repository
+  version          = var.argocd_version
 
   depends_on = [
     module.eks,
-    kubernetes_secret.argocd_admin_password,
   ]
 }
 
-## Add repositories secrets into the argocd namespace if required 
-resource "kubernetes_secret" "argocd_repositories" {
-  for_each = var.argocd_repositories_secrets
+## Create the repositories from aws secret manager
+resource "kubectl_manifest" "argocd_repositories" {
+  count = length(local.argocd_secrets)
 
-  metadata {
-    name      = format("argocd-repositories-%s", each.key)
-    namespace = kubernetes_namespace.argocd.metadata[0].name
-    labels = {
-      "argocd.argoproj.io/secret-type" = "repository"
-    }
-  }
+  yaml_body = templatefile("${path.module}/assets/argocd/repository.yaml", {
+    name            = local.argocd_secrets[count.index].name
+    url             = try(data.aws_secretsmanager_secret_version.current[count.index].secret_string.url, null)
+    username        = try(data.aws_secretsmanager_secret_version.current[count.index].secret_string.username, null)
+    password        = try(data.aws_secretsmanager_secret_version.current[count.index].secret_string.password, null)
+    ssh_private_key = try(data.aws_secretsmanager_secret_version.current[count.index].secret_string.ssh_private_key, null)
+  })
 
-  data = each.value.secret_manager_arn != null ? jsondecode(data.aws_secretsmanager_secret_version.current[each.value.secret_manager_arn].secret_string) : merge(
-    { "url" = each.value.url },
-    each.value.username != null ? { "username" = each.value.username } : {},
-    each.value.password != null ? { "password" = each.value.password } : {},
-    each.value.ssh_private_key != null ? { "ssh-private-key" = each.value.ssh_private_key } : {},
-  )
+  depends_on = [
+    helm_release.argocd,
+  ]
 }
 
-## Add the platform application to the argocd namespace 
-resource "kubernetes_manifest" "platform" {
+## Add repositories secrets into the argocd namespace if required
+resource "kubectl_manifest" "argocd_repositories_inputs" {
+  for_each = local.argocd_secrets_inputs
+
+  yaml_body = templatefile("${path.module}/assets/argocd/repository.yaml", {
+    name            = each.key
+    url             = each.value.url
+    username        = each.value.username
+    password        = each.value.password
+    ssh_private_key = each.value.ssh_private_key
+  })
+
+  depends_on = [
+    helm_release.argocd,
+  ]
+}
+
+## Add the platform application to the argocd namespace
+resource "kubectl_manifest" "platform" {
   count = var.enable_platform_onboarding ? 1 : 0
 
-  manifest = templatefile("${path.module}/assets/platform.yaml", {
+  yaml_body = templatefile("${path.module}/assets/argocd/platform.yaml", {
     cluster_name        = var.cluster_name
     platform_repository = var.platform_repository
     platform_revision   = var.platform_revision
@@ -68,7 +84,7 @@ resource "kubernetes_secret" "argocd_admin_password" {
 
   metadata {
     name      = "argocd-initial-admin-secret"
-    namespace = kubernetes_namespace.argocd.metadata[0].name
+    namespace = "argocd"
   }
 
   data = {
@@ -76,6 +92,7 @@ resource "kubernetes_secret" "argocd_admin_password" {
   }
 
   depends_on = [
-    kubernetes_namespace.argocd,
+    helm_release.argocd,
+    module.eks,
   ]
 }
