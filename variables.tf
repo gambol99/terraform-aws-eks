@@ -25,11 +25,11 @@ variable "argocd_repositories_secrets" {
     secret_manager_arn = optional(string, null)
     ## The URL of the repository
     url = string
-    ## An optional username for the repository 
+    ## An optional username for the repository
     username = optional(string, null)
-    ## An optional password for the repository 
+    ## An optional password for the repository
     password = optional(string, null)
-    ## An optional SSH private key for the repository 
+    ## An optional SSH private key for the repository
     ssh_private_key = optional(string, null)
   }))
   default = {}
@@ -57,7 +57,7 @@ variable "argocd_version" {
 variable "aws_ebs_csi_driver_addon_version" {
   description = "The version to use for the AWS EBS CSI driver."
   type        = string
-  default     = "v1.31.0-eksbuild.1"
+  default     = "v1.39.0-eksbuild.1"
 }
 
 variable "aws_vpc_cni_addon_version" {
@@ -98,7 +98,7 @@ variable "cluster_security_group_additional_rules" {
 variable "cluster_version" {
   description = "Kubernetes version for the EKS cluster"
   type        = string
-  default     = "1.30"
+  default     = "1.32"
 }
 
 variable "coredns_addon_version" {
@@ -152,7 +152,7 @@ variable "kms_key_administrators" {
 variable "kube_proxy_addon_version" {
   description = "Kube Proxy Addon version to use."
   type        = string
-  default     = "v1.30.3-eksbuild.9"
+  default     = "v1.32.0-eksbuild.2"
 }
 
 variable "nat_gateway_mode" {
