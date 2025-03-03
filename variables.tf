@@ -14,56 +14,16 @@ variable "access_entries" {
   default = {}
 }
 
-variable "argocd_repositories_secrets" {
-  description = "A collection of repository secrets to add to the argocd namespace"
-  type = map(object({
-    ## The description of the repository
-    description = string
-    ## The secret to use for the repository
-    secret = optional(string, null)
-    ## The secret manager ARN to use for the secret
-    secret_manager_arn = optional(string, null)
-    ## The URL of the repository
-    url = string
-    ## An optional username for the repository
-    username = optional(string, null)
-    ## An optional password for the repository
-    password = optional(string, null)
-    ## An optional SSH private key for the repository
-    ssh_private_key = optional(string, null)
-  }))
-  default = {}
-}
-
-variable "argocd_admin_password" {
-  description = "Initial admin password for ArgoCD"
-  type        = string
-  sensitive   = true
-  default     = null
-}
-
-variable "argocd_helm_repository" {
-  description = "The URL of the ArgoCD Helm repository"
-  type        = string
-  default     = "https://argoproj.github.io/argo-helm"
-}
-
-variable "argocd_version" {
-  description = "Version of ArgoCD Helm chart to install"
-  type        = string
-  default     = "7.8.3"
-}
-
-variable "aws_ebs_csi_driver_addon_version" {
-  description = "The version to use for the AWS EBS CSI driver."
-  type        = string
-  default     = "v1.39.0-eksbuild.1"
+variable "availability_zones" {
+  description = "Number of availability zones when provisioning a network"
+  type        = number
+  default     = 3
 }
 
 variable "aws_vpc_cni_addon_version" {
   description = "AWS VPC CNI Addon version to use."
   type        = string
-  default     = "v1.18.5-eksbuild.1"
+  default     = "v1.19.2-eksbuild.5"
 }
 
 variable "cluster_name" {
@@ -104,19 +64,61 @@ variable "cluster_version" {
 variable "coredns_addon_version" {
   description = "CoreDNS Addon version to use."
   type        = string
-  default     = "v1.11.3-eksbuild.1"
+  default     = "v1.11.4-eksbuild.2"
 }
 
-variable "ebs_csi_kms_cmk_ids" {
-  description = "List of KMS CMKs to allow EBS CSI to manage encrypted volumes. This is required if EBS encryption is set at the account level with a default KMS CMK."
-  type        = list(string)
-  default     = []
+variable "eks_managed_node_groups" {
+  description = "A collection of managed node groups to provision"
+  type = map(object({
+    ## The type of AMI to use for the node group
+    ami_type = string
+    ## The name of the node group
+    name = string
+    ## The instance type to use for the node group
+    instance_type = string
+    ## The minimum size of the node group
+    min_size = number
+    ## The maximum size of the node group
+    max_size = number
+    ## The desired size of the node group
+    desired_size = number
+    ## The labels to apply to the node group
+    labels = optional(map(string))
+    ## The taints to apply to the node group
+    taints = optional(list(object({
+      ## The key of the taint
+      key = string
+      ## The value of the taint
+      value = string
+      ## The effect of the taint
+      effect = string
+    })))
+  }))
+  default = {
+    karpenter = {
+      ami_type      = "BOTTLEROCKET_x86_64"
+      name          = "karpenter"
+      instance_type = "t3.medium"
+      min_size      = 0
+      max_size      = 1
+      desired_size  = 1
+
+      taints = [
+        {
+          key    = "karpenter.sh/controller"
+          value  = "true"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+  }
 }
 
-variable "enable_platform_onboarding" {
-  description = "Whether to enable platform onboarding"
-  type        = bool
-  default     = true
+
+variable "pod_identity_agent_version" {
+  description = "The version of the pod identity agent to use"
+  type        = string
+  default     = "v1.3.5-eksbuild.2"
 }
 
 variable "enable_nat_gateway" {
@@ -129,18 +131,6 @@ variable "enable_transit_gateway" {
   description = "Whether to enable a transit gateway for the VPC"
   type        = bool
   default     = false
-}
-
-variable "enable_pod_identity" {
-  description = "Indicates if we should enable pod identity"
-  type        = bool
-  default     = true
-}
-
-variable "fargate_pod_execution_role_name" {
-  description = "The name of the Fargate pod execution role"
-  type        = string
-  default     = "fargate-pod-execution-role"
 }
 
 variable "kms_key_administrators" {
@@ -173,6 +163,12 @@ variable "private_subnet_netmask" {
   default     = 24
 }
 
+variable "private_subnet_ids" {
+  description = "List of private subnet IDs, if you want to use existing subnets"
+  type        = list(string)
+  default     = null
+}
+
 variable "public_subnet_netmask" {
   description = "The netmask for the public subnets"
   type        = number
@@ -200,34 +196,4 @@ variable "vpc_id" {
   description = "ID of the VPC where the EKS cluster will be created"
   type        = string
   default     = null
-}
-
-variable "private_subnet_ids" {
-  description = "List of private subnet IDs, if you want to use existing subnets"
-  type        = list(string)
-  default     = null
-}
-
-variable "platform_repository" {
-  description = "The URL of the platform repository"
-  type        = string
-  default     = "https://github.com/gambol99/eks-platform"
-}
-
-variable "platform_revision" {
-  description = "The revision of the platform repository"
-  type        = string
-  default     = "HEAD"
-}
-
-variable "tenant_repository" {
-  description = "The URL of the tenant repository"
-  type        = string
-  default     = "https://github.com/gambol99/eks-tenant"
-}
-
-variable "tenant_revision" {
-  description = "The revision of the tenant repository"
-  type        = string
-  default     = "HEAD"
 }

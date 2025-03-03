@@ -12,7 +12,7 @@ plugin "terraform" {
 
 config {
   call_module_type = "local"
-  force  = false
+  force            = false
   #varfile = ["values/production.tfvars"]
 }
 
@@ -69,7 +69,6 @@ rule "terraform_workspace_remote" {
   enabled = true
 }
 
-# As we are using cloudaccces-lza from a branch for testing, we need to disable this rule
 rule "terraform_module_pinned_source" {
   enabled = false
 }
