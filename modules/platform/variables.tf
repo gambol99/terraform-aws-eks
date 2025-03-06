@@ -24,6 +24,12 @@ variable "argocd_helm_repository" {
   default     = "https://argoproj.github.io/argo-helm"
 }
 
+variable "argocd_values" {
+  description = "Additional values to add to the argocd Helm chart"
+  type        = list(string)
+  default     = []
+}
+
 variable "repositories" {
   description = "A collection of repository secrets to add to the argocd namespace"
   type = map(object({

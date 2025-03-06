@@ -35,13 +35,14 @@ module "eks" {
   access_entries                 = local.access_entries
   cluster_enabled_log_types      = null
   cluster_endpoint_public_access = true
-  cluster_name                   = "grn"
+  cluster_name                   = "hub"
+  enable_auto_mode               = true
   enable_nat_gateway             = true
   nat_gateway_mode               = "single_az"
   private_subnet_netmask         = 24
   public_subnet_netmask          = 24
   tags                           = local.tags
-  vpc_cidr                       = "10.0.0.0/21"
+  vpc_cidr                       = "10.90.0.0/21"
 }
 
 module "platform" {
@@ -52,18 +53,18 @@ module "platform" {
       description = "Credentials for the platform repository"
       username    = "gambol99"
       password    = var.github_token
-      url         = "https://guthub.com/gambol99/eks-tenant.git"
+      url         = "https://guthub.com/gambol99/kubernetes-platform.git"
     }
     tenant = {
       description = "Credentials for the platform repository"
       username    = "gambol99"
       password    = var.github_token
-      url         = "https://guthub.com/gambol99/eks-tenant.git"
+      url         = "https://guthub.com/gambol99/platform-tenant.git"
     }
   }
 
-  cluster_name      = "hub"
-  tenant_path       = "release/hub"
-  tenant_repository = "https://github.com/gambol99/eks-tenant"
+  cluster_name      = "dev"
+  cluster_type      = "standalone"
+  tenant_repository = "https://github.com/gambol99/platform-tenant.git"
   tenant_revision   = "HEAD"
 }

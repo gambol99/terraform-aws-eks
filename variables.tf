@@ -61,6 +61,12 @@ variable "cluster_version" {
   default     = "1.32"
 }
 
+variable "cluster_addons" {
+  description = "A collection of cluster addons to enable"
+  type        = map(any)
+  default     = null
+}
+
 variable "enable_auto_mode" {
   description = "Indicates if we should enable auto mode for the EKS cluster"
   type        = bool

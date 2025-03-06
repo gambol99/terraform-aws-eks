@@ -7,6 +7,7 @@ module "eks" {
 
   access_entries                           = var.access_entries
   authentication_mode                      = "API"
+  cluster_addons                           = merge(local.cluster_addons, var.cluster_addons)
   cluster_enabled_log_types                = var.cluster_enabled_log_types
   cluster_endpoint_private_access          = true
   cluster_endpoint_public_access           = var.cluster_endpoint_public_access
@@ -32,33 +33,6 @@ module "eks" {
     enabled    = true
     node_pools = ["system"]
   } : null
-
-  # EKS Addons configuration
-  cluster_addons = {
-    coredns = {
-      addon_version               = var.coredns_addon_version
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
-
-    eks-pod-identity-agent = {
-      addon_version               = var.pod_identity_agent_version
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
-
-    kube-proxy = {
-      addon_version               = var.kube_proxy_addon_version
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
-
-    vpc-cni = {
-      addon_version               = var.aws_vpc_cni_addon_version
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
-  }
 
   ## Additional Security Group Rules for the Cluster Security Group
   cluster_security_group_additional_rules = merge({
