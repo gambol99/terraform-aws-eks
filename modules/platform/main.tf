@@ -38,7 +38,7 @@ resource "helm_release" "argocd" {
 }
 
 ## Add repositories secrets into the argocd namespace if required
-resource "kubectl_manifest" "argocd_repositories_inputs" {
+resource "kubectl_manifest" "repositories" {
   for_each = var.repositories
 
   yaml_body = templatefile("${path.module}/assets/repository.yaml", {
@@ -57,11 +57,13 @@ resource "kubectl_manifest" "argocd_repositories_inputs" {
 ## Provision the platform bootstrap
 resource "kubectl_manifest" "bootstrap" {
   yaml_body = templatefile("${path.module}/assets/platform.yaml", {
-    cluster_name    = try(var.cluster_name, "")
-    cluster_type    = var.cluster_type
-    repository      = var.tenant_repository
-    repository_path = var.tenant_path
-    revision        = var.tenant_revision
+    cluster_name        = try(var.cluster_name, "")
+    cluster_type        = var.cluster_type
+    platform_repository = var.platform_repository
+    platform_revision   = var.platform_revision
+    repository          = var.tenant_repository
+    repository_path     = var.tenant_path
+    revision            = var.tenant_revision
   })
 
   depends_on = [

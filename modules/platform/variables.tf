@@ -68,6 +68,18 @@ variable "cluster_name" {
   default     = null
 }
 
+variable "platform_repository" {
+  description = "The URL for the platform repository"
+  type        = string
+  default     = "https://github.com/gambol99/kubernetes-platform"
+}
+
+variable "platform_revision" {
+  description = "The revision of the platform repository"
+  type        = string
+  default     = "HEAD"
+}
+
 variable "tenant_repository" {
   description = "The URL of the tenant repository"
   type        = string

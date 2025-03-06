@@ -16,7 +16,7 @@ locals {
   vpc_id = local.create_network ? module.vpc[0].vpc_id : var.vpc_id
 
   ## Default cluster addons
-  cluster_addons = var.enable_auto_mode ? {
+  cluster_addons = var.enable_auto_mode == false ? {
     coredns = {
       addon_version               = var.coredns_addon_version
       resolve_conflicts_on_create = "OVERWRITE"
