@@ -27,7 +27,9 @@
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_github_token"></a> [github\_token](#input\_github\_token) | The Github token used to source the tenant and platform repositories | `string` | n/a | yes |
 
 ## Outputs
 

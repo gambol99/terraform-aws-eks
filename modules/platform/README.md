@@ -26,6 +26,7 @@ No modules.
 | [helm_release.argocd](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubectl_manifest.argocd_repositories_inputs](https://registry.terraform.io/providers/alekc/kubectl/latest/docs/resources/manifest) | resource |
 | [kubectl_manifest.bootstrap](https://registry.terraform.io/providers/alekc/kubectl/latest/docs/resources/manifest) | resource |
+| [kubectl_manifest.namespace](https://registry.terraform.io/providers/alekc/kubectl/latest/docs/resources/manifest) | resource |
 | [kubernetes_secret.argocd_admin_password](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 
 ## Inputs
@@ -37,6 +38,7 @@ No modules.
 | <a name="input_argocd_chart"></a> [argocd\_chart](#input\_argocd\_chart) | The name of the chart to install | `string` | `"argo-cd"` | no |
 | <a name="input_argocd_helm_repository"></a> [argocd\_helm\_repository](#input\_argocd\_helm\_repository) | The URL of the ArgoCD Helm repository | `string` | `"https://argoproj.github.io/argo-helm"` | no |
 | <a name="input_argocd_namespace"></a> [argocd\_namespace](#input\_argocd\_namespace) | The namespace to install ArgoCD | `string` | `"argocd"` | no |
+| <a name="input_argocd_values"></a> [argocd\_values](#input\_argocd\_values) | Additional values to add to the argocd Helm chart | `list(string)` | `[]` | no |
 | <a name="input_argocd_version"></a> [argocd\_version](#input\_argocd\_version) | Version of ArgoCD Helm chart to install | `string` | `"7.8.5"` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | The name of the cluster | `string` | `null` | no |
 | <a name="input_repositories"></a> [repositories](#input\_repositories) | A collection of repository secrets to add to the argocd namespace | <pre>map(object({<br/>    ## The description of the repository<br/>    description = string<br/>    ## The secret to use for the repository<br/>    secret = optional(string, null)<br/>    ## The secret manager ARN to use for the secret<br/>    secret_manager_arn = optional(string, null)<br/>    ## The URL of the repository<br/>    url = string<br/>    ## An optional username for the repository<br/>    username = optional(string, null)<br/>    ## An optional password for the repository<br/>    password = optional(string, null)<br/>    ## An optional SSH private key for the repository<br/>    ssh_private_key = optional(string, null)<br/>  }))</pre> | `{}` | no |
