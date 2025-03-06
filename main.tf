@@ -1,3 +1,27 @@
+## Create IAM Role for ArgoCD cross-account access
+resource "aws_iam_role" "argocd_cross_account_role" {
+  count = var.hub_account_id != null ? 1 : 0
+
+  name = "${var.cluster_name}-argocd-cross-account"
+  tags = local.tags
+
+  # Trust policy that allows the ArgoCD account to assume this role
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "AllowCrossAccountAssumeRole"
+        Effect = "Allow",
+        Principal = {
+          AWS = format("arn:aws:iam::%s:root", var.hub_account_id)
+        },
+        Action    = "sts:AssumeRole",
+        Condition = {}
+      }
+    ]
+  })
+}
+
 # tfsec:ignore:aws-eks-no-public-cluster-access
 # tfsec:ignore:aws-ec2-no-public-egress-sgr
 # tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
@@ -5,7 +29,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.33.1"
 
-  access_entries                           = var.access_entries
+  access_entries                           = local.access_entries
   authentication_mode                      = "API"
   cluster_addons                           = merge(local.cluster_addons, var.cluster_addons)
   cluster_enabled_log_types                = var.cluster_enabled_log_types

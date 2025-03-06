@@ -201,3 +201,9 @@ variable "vpc_id" {
   type        = string
   default     = null
 }
+
+variable "hub_account_id" {
+  description = "AWS Account ID where Hub cluster is deployed (optional)"
+  type        = string
+  default     = null
+}
