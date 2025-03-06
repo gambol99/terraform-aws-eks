@@ -56,6 +56,12 @@ variable "cluster_type" {
   type        = string
 }
 
+variable "cluster_name" {
+  description = "The name of the cluster"
+  type        = string
+  default     = null
+}
+
 variable "tenant_repository" {
   description = "The URL of the tenant repository"
   type        = string

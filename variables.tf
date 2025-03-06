@@ -61,6 +61,12 @@ variable "cluster_version" {
   default     = "1.32"
 }
 
+variable "enable_auto_mode" {
+  description = "Indicates if we should enable auto mode for the EKS cluster"
+  type        = bool
+  default     = true
+}
+
 variable "coredns_addon_version" {
   description = "CoreDNS Addon version to use."
   type        = string
@@ -95,25 +101,17 @@ variable "eks_managed_node_groups" {
     })))
   }))
   default = {
-    karpenter = {
+    system = {
       ami_type      = "BOTTLEROCKET_x86_64"
-      name          = "karpenter"
+      name          = "system"
       instance_type = "t3.medium"
-      min_size      = 0
+      min_size      = 1
       max_size      = 1
       desired_size  = 1
-
-      taints = [
-        {
-          key    = "karpenter.sh/controller"
-          value  = "true"
-          effect = "NO_SCHEDULE"
-        }
-      ]
+      taints        = []
     }
   }
 }
-
 
 variable "pod_identity_agent_version" {
   description = "The version of the pod identity agent to use"

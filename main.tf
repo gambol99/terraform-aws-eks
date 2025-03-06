@@ -1,4 +1,3 @@
-
 # tfsec:ignore:aws-eks-no-public-cluster-access
 # tfsec:ignore:aws-ec2-no-public-egress-sgr
 # tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
@@ -28,21 +27,18 @@ module "eks" {
     "karpenter.sh/discovery" = local.name
   })
 
-  ## A
+  ## Should we enable auto mode
+  cluster_compute_config = var.enable_auto_mode ? {
+    enabled    = true
+    node_pools = ["system"]
+  } : null
+
+  # EKS Addons configuration
   cluster_addons = {
     coredns = {
       addon_version               = var.coredns_addon_version
       resolve_conflicts_on_create = "OVERWRITE"
       resolve_conflicts_on_update = "OVERWRITE"
-      configuration_values = jsonencode({
-        tolerations = [
-          {
-            key    = "karpenter.sh/controller"
-            value  = "true"
-            effect = "NoSchedule"
-          }
-        ]
-      })
     }
 
     eks-pod-identity-agent = {

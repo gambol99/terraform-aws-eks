@@ -20,6 +20,7 @@ module "aws_cloudwatch_observability_pod_identity" {
 
 ## Provision the pod identity for the EBS CSI Driver
 module "aws_ebs_csi_pod_identity" {
+  count   = var.enable_auto_mode ? 0 : 1
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 1.4.0"
 
@@ -40,6 +41,7 @@ module "aws_ebs_csi_pod_identity" {
 
 ## Provision the pod identity for the External Secrets
 module "aws_lb_controller_pod_identity" {
+  count   = var.enable_auto_mode ? 0 : 1
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 1.4.0"
 
@@ -59,6 +61,7 @@ module "aws_lb_controller_pod_identity" {
 
 ## Provision the pod identity for Karpenter
 module "karpenter" {
+  count   = var.enable_auto_mode ? 0 : 1
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
   version = "~> 20.23.0"
 

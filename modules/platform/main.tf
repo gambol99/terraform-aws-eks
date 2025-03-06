@@ -9,26 +9,9 @@ resource "helm_release" "argocd" {
   version          = var.argocd_version
 }
 
-## Create the repositories from aws secret manager
-resource "kubectl_manifest" "argocd_repositories" {
-  count = length(local.repositories_via_secretsmanager)
-
-  yaml_body = templatefile("${path.module}/assets/repository.yaml", {
-    name            = local.argocd_secrets[count.index].name
-    password        = try(data.aws_secretsmanager_secret_version.current[count.index].secret_string.password, null)
-    ssh_private_key = try(data.aws_secretsmanager_secret_version.current[count.index].secret_string.ssh_private_key, null)
-    url             = try(data.aws_secretsmanager_secret_version.current[count.index].secret_string.url, null)
-    username        = try(data.aws_secretsmanager_secret_version.current[count.index].secret_string.username, null)
-  })
-
-  depends_on = [
-    helm_release.argocd,
-  ]
-}
-
 ## Add repositories secrets into the argocd namespace if required
 resource "kubectl_manifest" "argocd_repositories_inputs" {
-  for_each = local.repositories
+  for_each = var.repositories
 
   yaml_body = templatefile("${path.module}/assets/repository.yaml", {
     name            = each.key
@@ -63,10 +46,8 @@ resource "kubernetes_secret" "argocd_admin_password" {
 
 ## Provision the platform bootstrap
 resource "kubectl_manifest" "bootstrap" {
-  for_each = local.repositories
-
   yaml_body = templatefile("${path.module}/assets/platform.yaml", {
-    cluster_name    = var.cluster_name
+    cluster_name    = try(var.cluster_name, "")
     cluster_type    = var.cluster_type
     repository      = var.tenant_repository
     repository_path = var.tenant_path
@@ -77,4 +58,3 @@ resource "kubectl_manifest" "bootstrap" {
     helm_release.argocd,
   ]
 }
-
