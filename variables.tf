@@ -14,6 +14,36 @@ variable "access_entries" {
   default = {}
 }
 
+variable "enable_karpenter_pod_identity" {
+  description = "Indicates if we should enable pod identity for Karpenter"
+  type        = bool
+  default     = false
+}
+
+variable "enable_lb_controller_pod_identity" {
+  description = "Indicates if we should enable pod identity for the Load Balancer Controller"
+  type        = bool
+  default     = false
+}
+
+variable "enable_cloudwatch_observability_pod_identity" {
+  description = "Indicates if we should enable pod identity for the CloudWatch Observability"
+  type        = bool
+  default     = false
+}
+
+variable "enable_ebs_csi_pod_identity" {
+  description = "Indicates if we should enable pod identity for the EBS CSI"
+  type        = bool
+  default     = false
+}
+
+variable "enable_argocd_pod_identity" {
+  description = "Indicates if we should enable pod identity for ArgoCD"
+  type        = bool
+  default     = false
+}
+
 variable "availability_zones" {
   description = "Number of availability zones when provisioning a network"
   type        = number
@@ -106,17 +136,18 @@ variable "eks_managed_node_groups" {
       effect = string
     })))
   }))
-  default = {
-    system = {
-      ami_type      = "BOTTLEROCKET_x86_64"
-      name          = "system"
-      instance_type = "t3.medium"
-      min_size      = 1
-      max_size      = 1
-      desired_size  = 1
-      taints        = []
-    }
-  }
+  default = {}
+  #  default = {
+  #    system = {
+  #      ami_type      = "BOTTLEROCKET_x86_64"
+  #      name          = "system"
+  #      instance_type = "t3.medium"
+  #      min_size      = 1
+  #      max_size      = 1
+  #      desired_size  = 1
+  #      taints        = []
+  #    }
+  #  }
 }
 
 variable "pod_identity_agent_version" {

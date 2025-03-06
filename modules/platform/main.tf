@@ -57,13 +57,13 @@ resource "kubectl_manifest" "repositories" {
 ## Provision the platform bootstrap
 resource "kubectl_manifest" "bootstrap" {
   yaml_body = templatefile("${path.module}/assets/platform.yaml", {
-    cluster_name        = try(var.cluster_name, "")
-    cluster_type        = var.cluster_type
-    platform_repository = var.platform_repository
-    platform_revision   = var.platform_revision
-    repository          = var.tenant_repository
-    repository_path     = var.tenant_path
-    revision            = var.tenant_revision
+    cluster_name           = try(var.cluster_name, "")
+    cluster_type           = var.cluster_type
+    platform_repository    = var.platform_repository
+    platform_revision      = var.platform_revision
+    tenant_repository      = var.tenant_repository
+    tenant_repository_path = var.tenant_path
+    tenant_revision        = var.tenant_revision
   })
 
   depends_on = [

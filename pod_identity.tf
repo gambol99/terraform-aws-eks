@@ -1,6 +1,36 @@
+## Provision the pod identity for argocd in the hub cluster
+module "aws_argocd_pod_identity" {
+  count   = var.enable_argocd_pod_identity ? 1 : 0
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 1.4.0"
+
+  attach_custom_policy      = true
+  custom_policy_description = "Allow ArgoCD to assume role into spoke accounts"
+  name                      = "aws-argocd-${local.name}"
+  tags                      = local.tags
+
+  policy_statements = [
+    {
+      actions   = ["sts:AssumeRole"]
+      effect    = "Allow"
+      resources = ["arn:aws:iam::*:role/*"]
+      sid       = "AllowAssumeRole"
+    }
+  ]
+
+  # Pod Identity Associations
+  associations = {
+    addon = {
+      cluster_name    = module.eks.cluster_name
+      namespace       = "argocd"
+      service_account = "argocd-application-controller"
+    }
+  }
+}
 
 ## Provision the pod identity for the CloudWatch Agent
 module "aws_cloudwatch_observability_pod_identity" {
+  count   = var.enable_cloudwatch_observability_pod_identity ? 1 : 0
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 1.4.0"
 
@@ -20,7 +50,7 @@ module "aws_cloudwatch_observability_pod_identity" {
 
 ## Provision the pod identity for the EBS CSI Driver
 module "aws_ebs_csi_pod_identity" {
-  count   = var.enable_auto_mode ? 0 : 1
+  count   = var.enable_ebs_csi_pod_identity ? 1 : 0
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 1.4.0"
 
@@ -41,7 +71,7 @@ module "aws_ebs_csi_pod_identity" {
 
 ## Provision the pod identity for the External Secrets
 module "aws_lb_controller_pod_identity" {
-  count   = var.enable_auto_mode ? 0 : 1
+  count   = var.enable_lb_controller_pod_identity ? 1 : 0
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 1.4.0"
 
@@ -61,7 +91,7 @@ module "aws_lb_controller_pod_identity" {
 
 ## Provision the pod identity for Karpenter
 module "karpenter" {
-  count   = var.enable_auto_mode ? 0 : 1
+  count   = var.enable_karpenter_pod_identity ? 1 : 0
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
   version = "~> 20.23.0"
 
