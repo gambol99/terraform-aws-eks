@@ -44,27 +44,3 @@ module "eks" {
   tags                           = local.tags
   vpc_cidr                       = "10.90.0.0/21"
 }
-
-module "platform" {
-  source = "../../modules/platform"
-
-  repositories = {
-    platform = {
-      description = "Credentials for the platform repository"
-      username    = "gambol99"
-      password    = var.github_token
-      url         = "https://guthub.com/gambol99/kubernetes-platform.git"
-    }
-    tenant = {
-      description = "Credentials for the platform repository"
-      username    = "gambol99"
-      password    = var.github_token
-      url         = "https://guthub.com/gambol99/platform-tenant.git"
-    }
-  }
-
-  cluster_name      = "dev"
-  cluster_type      = "standalone"
-  tenant_repository = "https://github.com/gambol99/platform-tenant.git"
-  tenant_revision   = "HEAD"
-}
