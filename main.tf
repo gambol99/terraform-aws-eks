@@ -39,7 +39,7 @@ module "eks" {
   cluster_name                             = var.cluster_name
   cluster_version                          = var.cluster_version
   eks_managed_node_groups                  = var.eks_managed_node_groups
-  enable_cluster_creator_admin_permissions = var.access_entries != {} ? false : true
+  enable_cluster_creator_admin_permissions = local.enable_cluster_creator_admin_permissions
   kms_key_administrators                   = var.kms_key_administrators
   subnet_ids                               = local.private_subnets_ids
   tags                                     = local.tags

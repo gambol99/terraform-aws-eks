@@ -1,17 +1,24 @@
 variable "access_entries" {
   description = "Map of access entries to add to the cluster. This is required if you use a different IAM Role for Terraform Plan actions."
   type = map(object({
+    ## The list of kubernetes groups to associate the principal with
     kubernetes_groups = optional(list(string))
-    principal_arn     = string
+    ## The list of kubernetes users to associate the principal with
+    principal_arn = string
+    ## The list of kubernetes users to associate the principal with
     policy_associations = optional(map(object({
+      ## The policy arn to associate with the principal
       policy_arn = string
+      ## The access scope for the policy i.e. cluster or namespace
       access_scope = object({
+        ## The namespaces to apply the policy to
         namespaces = optional(list(string))
-        type       = string
+        ## The type of access scope i.e. cluster or namespace
+        type = string
       })
     })))
   }))
-  default = {}
+  default = null
 }
 
 variable "enable_karpenter_pod_identity" {

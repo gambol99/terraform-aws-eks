@@ -14,6 +14,8 @@ locals {
   tags = merge(var.tags, { Provisioner = "Terraform" })
   ## The vpc id to use for the cluster
   vpc_id = local.create_network ? module.vpc[0].vpc_id : var.vpc_id
+  ## Indicates if we should provision the local admin user
+  enable_cluster_creator_admin_permissions = var.access_entries == null ? true : false
 
   ## Default cluster addons
   cluster_addons = var.enable_auto_mode == false ? {
