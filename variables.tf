@@ -21,26 +21,8 @@ variable "access_entries" {
   default = null
 }
 
-variable "enable_karpenter_pod_identity" {
-  description = "Indicates if we should enable pod identity for Karpenter"
-  type        = bool
-  default     = false
-}
-
-variable "enable_lb_controller_pod_identity" {
-  description = "Indicates if we should enable pod identity for the Load Balancer Controller"
-  type        = bool
-  default     = false
-}
-
 variable "enable_cloudwatch_observability_pod_identity" {
   description = "Indicates if we should enable pod identity for the CloudWatch Observability"
-  type        = bool
-  default     = false
-}
-
-variable "enable_ebs_csi_pod_identity" {
-  description = "Indicates if we should enable pod identity for the EBS CSI"
   type        = bool
   default     = false
 }
@@ -51,16 +33,16 @@ variable "enable_argocd_pod_identity" {
   default     = false
 }
 
+variable "enable_aws_ack_iam_pod_identity" {
+  description = "Indicates if we should enable pod identity for AWS ACK IAM"
+  type        = bool
+  default     = true
+}
+
 variable "availability_zones" {
   description = "Number of availability zones when provisioning a network"
   type        = number
   default     = 3
-}
-
-variable "aws_vpc_cni_addon_version" {
-  description = "AWS VPC CNI Addon version to use."
-  type        = string
-  default     = "v1.19.2-eksbuild.5"
 }
 
 variable "cluster_name" {
@@ -104,57 +86,16 @@ variable "cluster_addons" {
   default     = null
 }
 
-variable "enable_auto_mode" {
-  description = "Indicates if we should enable auto mode for the EKS cluster"
-  type        = bool
-  default     = true
-}
-
 variable "coredns_addon_version" {
   description = "CoreDNS Addon version to use."
   type        = string
   default     = "v1.11.4-eksbuild.2"
 }
 
-variable "eks_managed_node_groups" {
-  description = "A collection of managed node groups to provision"
-  type = map(object({
-    ## The type of AMI to use for the node group
-    ami_type = string
-    ## The name of the node group
-    name = string
-    ## The instance type to use for the node group
-    instance_type = string
-    ## The minimum size of the node group
-    min_size = number
-    ## The maximum size of the node group
-    max_size = number
-    ## The desired size of the node group
-    desired_size = number
-    ## The labels to apply to the node group
-    labels = optional(map(string))
-    ## The taints to apply to the node group
-    taints = optional(list(object({
-      ## The key of the taint
-      key = string
-      ## The value of the taint
-      value = string
-      ## The effect of the taint
-      effect = string
-    })))
-  }))
-  default = {}
-  #  default = {
-  #    system = {
-  #      ami_type      = "BOTTLEROCKET_x86_64"
-  #      name          = "system"
-  #      instance_type = "t3.medium"
-  #      min_size      = 1
-  #      max_size      = 1
-  #      desired_size  = 1
-  #      taints        = []
-  #    }
-  #  }
+variable "node_pools" {
+  description = "Collection of nodepools to create via auto-mote karpenter"
+  type        = list(string)
+  default     = ["system"]
 }
 
 variable "pod_identity_agent_version" {
@@ -179,12 +120,6 @@ variable "kms_key_administrators" {
   description = "A list of IAM ARNs for EKS key administrators. If no value is provided, the current caller identity is used to ensure at least one key admin is available."
   type        = list(string)
   default     = []
-}
-
-variable "kube_proxy_addon_version" {
-  description = "Kube Proxy Addon version to use."
-  type        = string
-  default     = "v1.32.0-eksbuild.2"
 }
 
 variable "nat_gateway_mode" {

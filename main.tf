@@ -31,14 +31,12 @@ module "eks" {
 
   access_entries                           = local.access_entries
   authentication_mode                      = "API"
-  cluster_addons                           = merge(local.cluster_addons, var.cluster_addons)
   cluster_enabled_log_types                = var.cluster_enabled_log_types
   cluster_endpoint_private_access          = true
   cluster_endpoint_public_access           = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs     = var.cluster_endpoint_public_access_cidrs
   cluster_name                             = var.cluster_name
   cluster_version                          = var.cluster_version
-  eks_managed_node_groups                  = var.eks_managed_node_groups
   enable_cluster_creator_admin_permissions = local.enable_cluster_creator_admin_permissions
   kms_key_administrators                   = var.kms_key_administrators
   subnet_ids                               = local.private_subnets_ids
@@ -53,10 +51,10 @@ module "eks" {
   })
 
   ## Should we enable auto mode
-  cluster_compute_config = var.enable_auto_mode ? {
+  cluster_compute_config = {
     enabled    = true
-    node_pools = ["system"]
-  } : null
+    node_pools = var.node_pools
+  }
 
   ## Additional Security Group Rules for the Cluster Security Group
   cluster_security_group_additional_rules = merge({

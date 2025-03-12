@@ -17,7 +17,6 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_eks"></a> [eks](#module\_eks) | ../.. | n/a |
-| <a name="module_platform"></a> [platform](#module\_platform) | ../../modules/platform | n/a |
 
 ## Resources
 
@@ -27,9 +26,7 @@
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_github_token"></a> [github\_token](#input\_github\_token) | The Github token used to source the tenant and platform repositories | `string` | n/a | yes |
+No inputs.
 
 ## Outputs
 

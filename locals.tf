@@ -16,31 +16,6 @@ locals {
   vpc_id = local.create_network ? module.vpc[0].vpc_id : var.vpc_id
   ## Indicates if we should provision the local admin user
   enable_cluster_creator_admin_permissions = var.access_entries == null ? true : false
-
-  ## Default cluster addons
-  cluster_addons = var.enable_auto_mode == false ? {
-    coredns = {
-      addon_version               = var.coredns_addon_version
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
-    eks-pod-identity-agent = {
-      addon_version               = var.pod_identity_agent_version
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
-    kube-proxy = {
-      addon_version               = var.kube_proxy_addon_version
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
-    vpc-cni = {
-      addon_version               = var.aws_vpc_cni_addon_version
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
-  } : {}
-
   ## The access entries for the cluster
   access_entries = merge(
     ## The access entries provided by the user

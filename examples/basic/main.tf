@@ -36,7 +36,6 @@ module "eks" {
   cluster_enabled_log_types      = null
   cluster_endpoint_public_access = true
   cluster_name                   = "hub"
-  enable_auto_mode               = true
   enable_nat_gateway             = true
   nat_gateway_mode               = "single_az"
   private_subnet_netmask         = 24
