@@ -34,7 +34,6 @@ module "aws_ack_iam_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 1.4.0"
 
-  attach_custom_policy      = true
   custom_policy_description = "AWS IAM Controllers for the ACK system"
   name                      = "aws-ack-iam-${local.name}"
   tags                      = local.tags
