@@ -28,6 +28,30 @@ module "aws_argocd_pod_identity" {
   }
 }
 
+## Provision External secrets pod identity
+module "aws_external_secrets_pod_identity" {
+  count   = var.enable_external_secrets_pod_identity ? 1 : 0
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 1.4.0"
+
+  name = "aws-external-secrets-${local.name}"
+  tags = local.tags
+
+  attach_external_secrets_policy        = true
+  external_secrets_create_permission    = true
+  external_secrets_secrets_manager_arns = ["arn:aws:secretsmanager:*:*"]
+  external_secrets_ssm_parameter_arns   = ["arn:aws:ssm:*:*:parameter/eks/${local.name}/*"]
+
+  # Pod Identity Associations
+  associations = {
+    addon = {
+      cluster_name    = module.eks.cluster_name
+      namespace       = "external-secrets"
+      service_account = "external-secrets"
+    }
+  }
+}
+
 ## Provision AWS Awk IAM Controllers pod identity
 module "aws_ack_iam_pod_identity" {
   count   = var.enable_aws_ack_iam_pod_identity ? 1 : 0

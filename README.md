@@ -19,6 +19,7 @@
 | <a name="module_aws_ack_iam_pod_identity"></a> [aws\_ack\_iam\_pod\_identity](#module\_aws\_ack\_iam\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 1.4.0 |
 | <a name="module_aws_argocd_pod_identity"></a> [aws\_argocd\_pod\_identity](#module\_aws\_argocd\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 1.4.0 |
 | <a name="module_aws_cloudwatch_observability_pod_identity"></a> [aws\_cloudwatch\_observability\_pod\_identity](#module\_aws\_cloudwatch\_observability\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 1.4.0 |
+| <a name="module_aws_external_secrets_pod_identity"></a> [aws\_external\_secrets\_pod\_identity](#module\_aws\_external\_secrets\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 1.4.0 |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 20.33.1 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | appvia/network/aws | 0.3.5 |
 
@@ -48,6 +49,7 @@
 | <a name="input_enable_argocd_pod_identity"></a> [enable\_argocd\_pod\_identity](#input\_enable\_argocd\_pod\_identity) | Indicates if we should enable pod identity for ArgoCD | `bool` | `false` | no |
 | <a name="input_enable_aws_ack_iam_pod_identity"></a> [enable\_aws\_ack\_iam\_pod\_identity](#input\_enable\_aws\_ack\_iam\_pod\_identity) | Indicates if we should enable pod identity for AWS ACK IAM | `bool` | `true` | no |
 | <a name="input_enable_cloudwatch_observability_pod_identity"></a> [enable\_cloudwatch\_observability\_pod\_identity](#input\_enable\_cloudwatch\_observability\_pod\_identity) | Indicates if we should enable pod identity for the CloudWatch Observability | `bool` | `false` | no |
+| <a name="input_enable_external_secrets_pod_identity"></a> [enable\_external\_secrets\_pod\_identity](#input\_enable\_external\_secrets\_pod\_identity) | Indicates if we should enable pod identity for External Secrets | `bool` | `true` | no |
 | <a name="input_enable_nat_gateway"></a> [enable\_nat\_gateway](#input\_enable\_nat\_gateway) | Whether to enable a nat gateway for the VPC | `bool` | `false` | no |
 | <a name="input_enable_transit_gateway"></a> [enable\_transit\_gateway](#input\_enable\_transit\_gateway) | Whether to enable a transit gateway for the VPC | `bool` | `false` | no |
 | <a name="input_hub_account_id"></a> [hub\_account\_id](#input\_hub\_account\_id) | AWS Account ID where Hub cluster is deployed (optional) | `string` | `null` | no |

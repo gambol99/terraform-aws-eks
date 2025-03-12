@@ -33,6 +33,12 @@ variable "enable_argocd_pod_identity" {
   default     = false
 }
 
+variable "enable_external_secrets_pod_identity" {
+  description = "Indicates if we should enable pod identity for External Secrets"
+  type        = bool
+  default     = true
+}
+
 variable "enable_aws_ack_iam_pod_identity" {
   description = "Indicates if we should enable pod identity for AWS ACK IAM"
   type        = bool
