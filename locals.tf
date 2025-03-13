@@ -16,6 +16,8 @@ locals {
   vpc_id = local.create_network ? module.vpc[0].vpc_id : var.vpc_id
   ## Indicates if we should provision the local admin user
   enable_cluster_creator_admin_permissions = var.access_entries == null ? true : false
+  ## Indicates we create the cross account role
+  enable_cross_account_role = var.hub_account_id != null ? true : false
   ## The access entries for the cluster
   access_entries = merge(
     ## The access entries provided by the user

@@ -23,6 +23,11 @@ output "account_id" {
   value       = local.account_id
 }
 
+output "cross_account_role_arn" {
+  description = "The cross account arn when we are using a hub"
+  value       = local.enable_cross_account_role ? try(aws_iam_role.argocd_cross_account_role[0].arn, null) : null
+}
+
 output "region" {
   description = "The AWS region."
   value       = local.region

@@ -1,6 +1,6 @@
 ## Create IAM Role for ArgoCD cross-account access
 resource "aws_iam_role" "argocd_cross_account_role" {
-  count = var.hub_account_id != null ? 1 : 0
+  count = local.enable_cross_account_role ? 1 : 0
 
   name = "${var.cluster_name}-argocd-cross-account"
   tags = local.tags
