@@ -21,22 +21,96 @@ variable "access_entries" {
   default = null
 }
 
-variable "enable_cloudwatch_observability_pod_identity" {
-  description = "Indicates if we should enable pod identity for the CloudWatch Observability"
-  type        = bool
-  default     = false
+variable "pod_identity" {
+  description = "The pod identity configuration"
+  type = map(object({
+    ## Indicates if we should enable the pod identity
+    enabled = optional(bool, false)
+    ## The namespace to deploy the pod identity to  
+    description = optional(string, null)
+    ## The service account to deploy the pod identity to
+    service_account = optional(string, null)
+    ## The managed policy ARNs to attach to the pod identity
+    managed_policy_arns = optional(list(string), [])
+    ## The permissions boundary ARN to use for the pod identity 
+    permissions_boundary_arn = optional(string, null)
+    ## The namespace to deploy the pod identity to 
+    namespace = optional(string, null)
+    ## The name of the pod identity role 
+    name = optional(string, null)
+    ## Additional policy statements to attach to the pod identity role  
+    policy_statements = optional(list(object({
+      sid       = optional(string, null)
+      actions   = optional(list(string), [])
+      resources = optional(list(string), [])
+      effect    = optional(string, null)
+    })))
+  }))
+  default = {}
 }
 
-variable "enable_external_secrets_pod_identity" {
-  description = "Indicates if we should enable pod identity for External Secrets"
-  type        = bool
-  default     = true
+variable "terranetes" {
+  description = "The Terranetes platform configuration"
+  type = object({
+    ## Indicates if we should enable the Terranetes platform
+    enabled = optional(bool, false)
+    ## The namespace to deploy the Terranetes platform to
+    namespace = optional(string, "terraform-system")
+    ## The service account to deploy the Terranetes platform to
+    service_account = optional(string, "terranetes-executor")
+    ## The permissions boundary ARN to use for the Terranetes platform
+    permissions_boundary_arn = optional(string, null)
+    ## Managed policies to attach to the Terranetes platform
+    managed_policy_arns = optional(map(string), {
+      "AdministratorAccess" = "arn:aws:iam::aws:policy/AdministratorAccess"
+    })
+  })
+  default = {}
 }
 
-variable "enable_aws_ack_iam_pod_identity" {
-  description = "Indicates if we should enable pod identity for AWS ACK IAM"
-  type        = bool
-  default     = true
+variable "external_secrets" {
+  description = "The External Secrets configuration"
+  type = object({
+    ## Indicates if we should enable the External Secrets platform
+    enabled = optional(bool, false)
+    ## The namespace to deploy the External Secrets platform to
+    namespace = optional(string, "external-secrets")
+    ## The service account to deploy the External Secrets platform to
+    service_account = optional(string, "external-secrets")
+    ## The secrets manager ARNs to attach to the External Secrets platform
+    secrets_manager_arns = optional(list(string), ["arn:aws:secretsmanager:*:*"])
+    ## The SSM parameter ARNs to attach to the External Secrets platform
+    ssm_parameter_arns = optional(list(string), ["arn:aws:ssm:*:*:parameter/eks/*"])
+  })
+  default = {}
+}
+
+variable "aws_ack_iam" {
+  description = "The AWS ACK IAM configuration"
+  type = object({
+    ## Indicates if we should enable the AWS ACK IAM platform
+    enabled = optional(bool, false)
+    ## The namespace to deploy the AWS ACK IAM platform to
+    namespace = optional(string, "ack-system")
+    ## The service account to deploy the AWS ACK IAM platform to
+    service_account = optional(string, "ack-iam-controller")
+    ## Managed policies to attach to the AWS ACK IAM platform
+    managed_policy_arns = optional(map(string), {})
+  })
+  default = {}
+}
+
+variable "cloudwatch_observability" {
+  description = "The CloudWatch Observability configuration"
+  type = object({
+    ## Indicates if we should enable the CloudWatch Observability platform
+    enabled = optional(bool, false)
+    ## The namespace to deploy the CloudWatch Observability platform to
+    namespace = optional(string, "cloudwatch-observability")
+    ## The service account to deploy the CloudWatch Observability platform to
+    service_account = optional(string, "cloudwatch-observability")
+  })
+  default = {}
 }
 
 variable "availability_zones" {
@@ -157,10 +231,31 @@ variable "vpc_id" {
   default     = null
 }
 
-variable "enable_argocd_pod_identity" {
-  description = "Indicates if we should enable pod identity for ArgoCD"
-  type        = bool
-  default     = false
+variable "cert_manager" {
+  description = "The cert-manager configuration"
+  type = object({
+    ## Indicates if we should enable the cert-manager platform
+    enabled = optional(bool, false)
+    ## The namespace to deploy the cert-manager platform to
+    namespace = optional(string, "cert-manager")
+    ## The service account to deploy the cert-manager platform to
+    service_account = optional(string, "cert-manager")
+    ## Route53 zone id to use for the cert-manager platform 
+    route53_zone_arns = optional(list(string), [])
+  })
+  default = {}
+}
+variable "argocd" {
+  description = "The ArgoCD configuration"
+  type = object({
+    ## Indicates if we should enable the ArgoCD platform
+    enabled = optional(bool, false)
+    ## The namespace to deploy the ArgoCD platform to
+    namespace = optional(string, "argocd")
+    ## The service account to deploy the ArgoCD platform to
+    service_account = optional(string, "argocd")
+  })
+  default = {}
 }
 
 variable "hub_account_roles_prefix" {
