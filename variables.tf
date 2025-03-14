@@ -27,12 +27,6 @@ variable "enable_cloudwatch_observability_pod_identity" {
   default     = false
 }
 
-variable "enable_argocd_pod_identity" {
-  description = "Indicates if we should enable pod identity for ArgoCD"
-  type        = bool
-  default     = false
-}
-
 variable "enable_external_secrets_pod_identity" {
   description = "Indicates if we should enable pod identity for External Secrets"
   type        = bool
@@ -86,28 +80,10 @@ variable "cluster_version" {
   default     = "1.32"
 }
 
-variable "cluster_addons" {
-  description = "A collection of cluster addons to enable"
-  type        = map(any)
-  default     = null
-}
-
-variable "coredns_addon_version" {
-  description = "CoreDNS Addon version to use."
-  type        = string
-  default     = "v1.11.4-eksbuild.2"
-}
-
 variable "node_pools" {
   description = "Collection of nodepools to create via auto-mote karpenter"
   type        = list(string)
   default     = ["system"]
-}
-
-variable "pod_identity_agent_version" {
-  description = "The version of the pod identity agent to use"
-  type        = string
-  default     = "v1.3.5-eksbuild.2"
 }
 
 variable "enable_nat_gateway" {
@@ -181,8 +157,26 @@ variable "vpc_id" {
   default     = null
 }
 
+variable "enable_argocd_pod_identity" {
+  description = "Indicates if we should enable pod identity for ArgoCD"
+  type        = bool
+  default     = false
+}
+
+variable "hub_account_roles_prefix" {
+  description = "The prefix of the roles we are permitted to assume via the argocd pod identity"
+  type        = string
+  default     = "argocd-cross-account-*"
+}
+
+variable "hub_account_role" {
+  description = "Indicates we should create a cross account role for the hub to assume"
+  type        = string
+  default     = "argocd-pod-identity-hub"
+}
+
 variable "hub_account_id" {
-  description = "AWS Account ID where Hub cluster is deployed (optional)"
+  description = "The AWS account ID of the hub account"
   type        = string
   default     = null
 }

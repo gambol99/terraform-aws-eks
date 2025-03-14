@@ -6,14 +6,18 @@ module "aws_argocd_pod_identity" {
 
   attach_custom_policy      = true
   custom_policy_description = "Allow ArgoCD to assume role into spoke accounts"
-  name                      = "aws-argocd-${local.name}"
+  name                      = "argocd-pod-identity-${local.name}"
   tags                      = local.tags
+  use_name_prefix           = false
 
   policy_statements = [
     {
-      actions   = ["sts:AssumeRole"]
+      actions = [
+        "sts:AssumeRole",
+        "sts:TagSession"
+      ]
       effect    = "Allow"
-      resources = ["arn:aws:iam::*:role/*"]
+      resources = [format("arn:aws:iam::*:role/%s", var.hub_account_roles_prefix)]
       sid       = "AllowAssumeRole"
     }
   ]
@@ -34,7 +38,7 @@ module "aws_external_secrets_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 1.4.0"
 
-  name = "aws-external-secrets-${local.name}"
+  name = "external-secrets-${local.name}"
   tags = local.tags
 
   attach_external_secrets_policy        = true
@@ -59,7 +63,7 @@ module "aws_ack_iam_pod_identity" {
   version = "~> 1.4.0"
 
   custom_policy_description = "AWS IAM Controllers for the ACK system"
-  name                      = "aws-ack-iam-${local.name}"
+  name                      = "ack-iam-${local.name}"
   tags                      = local.tags
 
   additional_policy_arns = {
@@ -83,8 +87,9 @@ module "aws_cloudwatch_observability_pod_identity" {
   version = "~> 1.4.0"
 
   attach_aws_cloudwatch_observability_policy = true
-  name                                       = "aws-cloudwatch-observability-${local.name}"
+  name                                       = "cloudwatch-pod-identity-${local.name}"
   tags                                       = local.tags
+  use_name_prefix                            = false
 
   # Pod Identity Associations
   associations = {

@@ -1,8 +1,9 @@
+
 ## Create IAM Role for ArgoCD cross-account access
 resource "aws_iam_role" "argocd_cross_account_role" {
   count = local.enable_cross_account_role ? 1 : 0
 
-  name = "${var.cluster_name}-argocd-cross-account"
+  name = "argocd-cross-account-${local.name}"
   tags = local.tags
 
   # Trust policy that allows the ArgoCD account to assume this role
@@ -13,10 +14,12 @@ resource "aws_iam_role" "argocd_cross_account_role" {
         Sid    = "AllowCrossAccountAssumeRole"
         Effect = "Allow",
         Principal = {
-          AWS = format("arn:aws:iam::%s:root", var.hub_account_id)
+          AWS = format("arn:aws:iam::%s:role/%s", var.hub_account_id, var.hub_account_role)
         },
-        Action    = "sts:AssumeRole",
-        Condition = {}
+        Action = [
+          "sts:AssumeRole",
+          "sts:TagSession"
+        ]
       }
     ]
   })
