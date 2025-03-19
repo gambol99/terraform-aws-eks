@@ -25,20 +25,20 @@ variable "pod_identity" {
   description = "The pod identity configuration"
   type = map(object({
     ## Indicates if we should enable the pod identity
-    enabled = optional(bool, false)
-    ## The namespace to deploy the pod identity to  
+    enabled = optional(bool, true)
+    ## The namespace to deploy the pod identity to
     description = optional(string, null)
     ## The service account to deploy the pod identity to
     service_account = optional(string, null)
     ## The managed policy ARNs to attach to the pod identity
     managed_policy_arns = optional(list(string), [])
-    ## The permissions boundary ARN to use for the pod identity 
+    ## The permissions boundary ARN to use for the pod identity
     permissions_boundary_arn = optional(string, null)
-    ## The namespace to deploy the pod identity to 
+    ## The namespace to deploy the pod identity to
     namespace = optional(string, null)
-    ## The name of the pod identity role 
+    ## The name of the pod identity role
     name = optional(string, null)
-    ## Additional policy statements to attach to the pod identity role  
+    ## Additional policy statements to attach to the pod identity role
     policy_statements = optional(list(object({
       sid       = optional(string, null)
       actions   = optional(list(string), [])
@@ -64,6 +64,21 @@ variable "terranetes" {
     managed_policy_arns = optional(map(string), {
       "AdministratorAccess" = "arn:aws:iam::aws:policy/AdministratorAccess"
     })
+  })
+  default = {}
+}
+
+variable "external_dns" {
+  description = "The External DNS configuration"
+  type = object({
+    ## Indicates if we should enable the External DNS platform
+    enabled = optional(bool, false)
+    ## The namespace to deploy the External DNS platform to
+    namespace = optional(string, "external-dns")
+    ## The service account to deploy the External DNS platform to
+    service_account = optional(string, "external-dns")
+    ## The route53 zone ARNs to attach to the External DNS platform
+    route53_zone_arns = optional(list(string), [])
   })
   default = {}
 }
@@ -240,7 +255,7 @@ variable "cert_manager" {
     namespace = optional(string, "cert-manager")
     ## The service account to deploy the cert-manager platform to
     service_account = optional(string, "cert-manager")
-    ## Route53 zone id to use for the cert-manager platform 
+    ## Route53 zone id to use for the cert-manager platform
     route53_zone_arns = optional(list(string), [])
   })
   default = {}

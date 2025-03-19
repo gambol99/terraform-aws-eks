@@ -45,6 +45,27 @@ module "aws_cert_manager_pod_identity" {
   }
 }
 
+## Provision the pod identity for external dns
+module "aws_external_dns_pod_identity" {
+  count   = var.external_dns.enabled ? 1 : 0
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 1.4.0"
+
+  name                          = "external-dns-${local.name}"
+  tags                          = local.tags
+  attach_external_dns_policy    = true
+  external_dns_hosted_zone_arns = try(var.external_dns.hosted_zone_arns, [])
+
+  # Pod Identity Associations
+  associations = {
+    addon = {
+      cluster_name    = module.eks.cluster_name
+      namespace       = try(var.external_dns.namespace, null)
+      service_account = try(var.external_dns.service_account, null)
+    }
+  }
+}
+
 ## Provision the pod identity for argocd in the hub cluster
 module "aws_argocd_pod_identity" {
   count   = var.argocd.enabled ? 1 : 0
