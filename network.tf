@@ -14,6 +14,7 @@ module "vpc" {
   public_subnet_netmask  = var.public_subnet_netmask
   tags                   = local.tags
   transit_gateway_id     = var.transit_gateway_id
+  transit_gateway_routes = var.transit_gateway_routes
   vpc_cidr               = var.vpc_cidr
 
   private_subnet_tags = {

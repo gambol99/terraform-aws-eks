@@ -234,6 +234,14 @@ variable "transit_gateway_id" {
   default     = null
 }
 
+variable "transit_gateway_routes" {
+  description = "The routes to add to the transit gateway route table"
+  type        = map(string)
+  default = {
+    "private" = "10.0.0.0/8"
+  }
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the Wayfinder VPC."
   type        = string
