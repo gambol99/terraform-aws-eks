@@ -31,7 +31,7 @@ variable "pod_identity" {
     ## The service account to deploy the pod identity to
     service_account = optional(string, null)
     ## The managed policy ARNs to attach to the pod identity
-    managed_policy_arns = optional(list(string), [])
+    managed_policy_arns = optional(map(string), {})
     ## The permissions boundary ARN to use for the pod identity
     permissions_boundary_arn = optional(string, null)
     ## The namespace to deploy the pod identity to
@@ -44,7 +44,7 @@ variable "pod_identity" {
       actions   = optional(list(string), [])
       resources = optional(list(string), [])
       effect    = optional(string, null)
-    })))
+    })), [])
   }))
   default = {}
 }
@@ -260,6 +260,7 @@ variable "cert_manager" {
   })
   default = {}
 }
+
 variable "argocd" {
   description = "The ArgoCD configuration"
   type = object({

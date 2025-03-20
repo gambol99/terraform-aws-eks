@@ -20,8 +20,6 @@ module "pod_identity" {
       service_account = try(each.value.service_account, null)
     }
   }
-
-  depends_on = [module.eks]
 }
 
 ## Provision the pod identity for cert-manager in the hub cluster
