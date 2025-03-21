@@ -8,7 +8,7 @@ module "vpc" {
   availability_zones     = var.availability_zones
   enable_transit_gateway = var.enable_transit_gateway
   enable_nat_gateway     = var.enable_nat_gateway
-  nat_gateway_mode       = var.nat_gateway_mode
+  nat_gateway_mode       = var.enable_nat_gateway ? var.nat_gateway_mode : "none"
   name                   = local.name
   private_subnet_netmask = var.private_subnet_netmask
   public_subnet_netmask  = var.public_subnet_netmask
